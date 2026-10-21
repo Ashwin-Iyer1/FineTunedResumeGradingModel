@@ -6,10 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "data:jobs": "python scripts/build_jobs.py",
+    "data:embed": "node scripts/embed_jobs.mjs"
   },
   "dependencies": {
+    "@huggingface/transformers": "^4.3.1",
     "next": "16.4.2",
+    "pdfjs-dist": "^5.7.284",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },

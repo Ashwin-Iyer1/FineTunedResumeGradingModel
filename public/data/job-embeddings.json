@@ -1,0 +1,8 @@
+{
+  "model": "turtlecap/mdbr-leaf-mt-resume-grader",
+  "revision": "d67ad62deee2dfefa2f9d365b42abbbedfb88ef4",
+  "dtype": "q8",
+  "dim": 384,
+  "count": 700,
+  "jobCharCap": 1200
+}
