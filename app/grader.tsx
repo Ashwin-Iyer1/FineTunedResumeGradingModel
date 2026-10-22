@@ -128,7 +128,7 @@ export default function Grader() {
   const [grading, setGrading] = useState(false);
   const [gradeError, setGradeError] = useState<string | null>(null);
 
-  const [aiWeight, setAiWeight] = useState(35);
+  const [aiWeight, setAiWeight] = useState(100);
   const [fn, setFn] = useState("All");
   const [level, setLevel] = useState("All");
   const [query, setQuery] = useState("");
@@ -476,7 +476,7 @@ function HowItWorks({
     },
     {
       title: "Calibrate & blend",
-      body: "A monotonic curve from calibration.json turns cosine into a 0–100 grade, scaled so the curve's ceiling reads 100. That grade is blended with a keyword skill-overlap score (65/35 by default).",
+      body: "A monotonic curve from calibration.json turns cosine into a 0–100 grade, scaled so the curve's ceiling reads 100. That grade is blended with a keyword skill-overlap score (0/100 by default).",
       live: run && best !== undefined && `best match: cosine ${best.toFixed(3)} → AI ${cosineToScore(best, calibration)}`,
     },
   ];

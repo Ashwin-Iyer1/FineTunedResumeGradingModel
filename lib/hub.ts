@@ -114,7 +114,7 @@ export async function getModelCard(): Promise<ModelCard | null> {
           r2: ev.calibration_recheck.datasets.diverse.models.selected_r2.equal_resume_grade_mae_points,
         },
         {
-          label: "Default 65/35 keyword blend",
+          label: "Default 0/100 keyword blend",
           baseline: ev.default_ui_blend_simulation.metrics.baseline.mae_points,
           r2: ev.default_ui_blend_simulation.metrics.candidate.mae_points,
         },

@@ -23,7 +23,7 @@ npm run dev   # http://localhost:3000
 5. **Compare**: cosine against 700 job vectors that were precomputed with the same
    model revision, so a run costs one resume embedding plus 700 dot products.
 6. **Calibrate & blend**: `calibration.json` from the Hub maps cosine to 0–100,
-   stretched so its 0.70 ceiling reads 100. The result is blended 65/35 with a
+   stretched so its 0.70 ceiling reads 100. The result is blended 0/100 with a
    keyword skill-overlap score (adjustable).
 
 ## Data
