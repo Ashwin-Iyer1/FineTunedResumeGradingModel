@@ -32,7 +32,8 @@ type Grade = {
 };
 
 const BLEND_KEY = "model-runner:ai-weight";
-const PAGE = 20;
+const PAGE = 3;
+const PAGEINCREASE = 5;
 
 function scoreTone(score: number) {
   if (score >= 70) return "bg-emerald-600 text-white";
@@ -131,6 +132,7 @@ export default function Grader() {
   const [aiWeight, setAiWeight] = useState(100);
   const [fn, setFn] = useState("All");
   const [level, setLevel] = useState("All");
+  const [sort, setSort] = useState("High");
   const [query, setQuery] = useState("");
   const [shown, setShown] = useState(PAGE);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -215,11 +217,13 @@ export default function Grader() {
 
   const functions = useMemo(() => (index ? ["All", ...new Set(index.jobs.map((j) => j.function))].sort() : []), [index]);
   const levels = useMemo(() => (index ? ["All", ...new Set(index.jobs.map((j) => j.level))] : []), [index]);
+  const sortOptions = useMemo(() => ["High", "Low"], []);
+  const sortLabels: Record<string, string> = { High: "High → Low", Low: "Low → High" };
 
   const filtered = useMemo(() => {
     if (!index) return [];
     const q = query.trim().toLowerCase();
-    return ranked.filter((g) => {
+    const matches = ranked.filter((g) => {
       const job = index.jobs[g.index];
       return (
         (fn === "All" || job.function === fn) &&
@@ -227,7 +231,8 @@ export default function Grader() {
         (!q || `${job.title} ${job.company} ${job.location}`.toLowerCase().includes(q))
       );
     });
-  }, [ranked, index, fn, level, query]);
+    return sort === "Low" ? matches.reverse() : matches;
+  }, [ranked, index, fn, level, query, sort]);
 
   const best = ranked[0];
   const stale = run && gradedResume !== resumeText;
@@ -353,6 +358,10 @@ export default function Grader() {
                     placeholder="Search title, company, location"
                     className="h-9 min-w-0 flex-1 rounded-md border border-zinc-300 bg-transparent px-3 text-sm dark:border-zinc-700"
                   />
+                  <label className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
+                    Sort:
+                    <Select value={sort} onChange={(v) => { setSort(v); setShown(PAGE); }} options={sortOptions} label="Sort by" format={(o) => sortLabels[o]} />
+                  </label>
                 </div>
                 <p className="mb-3 text-xs text-zinc-500">
                   {filtered.length} of {index.jobs.length} postings · ranked by {100 - aiWeight}% keyword + {aiWeight}% AI
@@ -413,10 +422,10 @@ export default function Grader() {
                 {filtered.length > shown && (
                   <button
                     type="button"
-                    onClick={() => setShown((s) => s + PAGE)}
+                    onClick={() => setShown((s) => s + PAGEINCREASE)}
                     className="mt-4 w-full rounded-md border border-zinc-300 py-2 text-sm hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
                   >
-                    Show {Math.min(PAGE, filtered.length - shown)} more
+                    Show {Math.min(PAGEINCREASE, filtered.length - shown)} more
                   </button>
                 )}
                 <p className="mt-4 text-xs text-zinc-500">
@@ -603,7 +612,7 @@ function Chip({ children, className, title }: { children: React.ReactNode; class
   );
 }
 
-function Select({ value, onChange, options, label }: { value: string; onChange: (v: string) => void; options: string[]; label: string }) {
+function Select({ value, onChange, options, label, format }: { value: string; onChange: (v: string) => void; options: string[]; label: string; format?: (o: string) => string }) {
   return (
     <select
       aria-label={label}
@@ -613,7 +622,7 @@ function Select({ value, onChange, options, label }: { value: string; onChange: 
     >
       {options.map((o) => (
         <option key={o} value={o}>
-          {o === "All" ? `All ${label.toLowerCase()}s` : o}
+          {format ? format(o) : o === "All" ? `All ${label.toLowerCase()}s` : o}
         </option>
       ))}
     </select>
